@@ -6,9 +6,10 @@ Mcfly is the library to query and update the Delorean database in Python.
 Connection
 ----------
 
-Connection to the database is really simple::
+Connecting to the database is really simple::
 
     connection = Connection(username='admin', password='12345')
+    connection.connect()
 
 Creating a Catalogue
 --------------------
@@ -16,6 +17,7 @@ Creating a Catalogue
 Creating a catalogue is used with the create_catalogue command from the connection class::
 
     connection = Connection(username='admin', password='12345')
+    connection.connect()
     catalogue = connection.create_catalogue('my_catalogue')
 
 You can also retrieve a current catalogue using::
