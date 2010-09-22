@@ -18,14 +18,14 @@ class Connection(object):
         self.connection = Network(self.host, self.port, self.username, self.password)
 
     def create_catalogue(self, name):
-        resp, content = self.connection.post('catalogues/create', data=[('name', name)])
+        resp, content = self.connection.post('catalogues/create', data=[('name', name)], content_type='application/x-www-form-urlencoded')
 
         if not resp or "status" not in resp or int(resp['status']) != 200:
             with file('/tmp/error.html', 'w') as error_file:
                 error_file.write(content)
             raise RuntimeError('The connection failed (HTTP-%s with the following message: %s' % (resp['status'], content))
         catalogue_dict = simplejson.loads(content)
-        import ipdb;ipdb.set_trace()
+
         return Catalogue(name=catalogue_dict['name'])
 
     def get_catalogue(self, name):
