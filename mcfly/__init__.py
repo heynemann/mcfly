@@ -17,7 +17,7 @@ class Connection(object):
         self.port = port
         self.connection = Network(self.host, self.port, self.username, self.password)
 
-    def create_catalogue(self, name):
+    def __create_catalogue(self, name):
         resp, content = self.connection.post('catalogues/create', data=[('name', name)], content_type='application/x-www-form-urlencoded')
 
         if not resp or "status" not in resp or int(resp['status']) != 200:
@@ -26,10 +26,13 @@ class Connection(object):
             raise RuntimeError('The connection failed (HTTP-%s with the following message: %s' % (resp['status'], content))
         catalogue_dict = simplejson.loads(content)
 
-        return Catalogue(name=catalogue_dict['name'])
+        return Catalogue(name=catalogue_dict['name'], connection=self)
 
-    def get_catalogue(self, name):
+    def __get_catalogue(self, name):
         pass
+
+    def __getattr__(self, name):
+        return self.__create_catalogue(name)
 
 class Network(object):
     def __init__(self, host, port, username, password):
