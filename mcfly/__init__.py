@@ -26,13 +26,15 @@ class Connection(object):
                 error_file.write(content)
             raise RuntimeError('The connection failed (HTTP-%s with the following message: %s' % (resp['status'], content))
 
-    def __create_catalogue(self, name):
+    def create_catalogue(self, name):
         resp, content = self.connection.post('catalogues/create', data={'name': name}, content_type='application/x-www-form-urlencoded')
 
         self.__assert_response(resp, content)
         catalogue_dict = simplejson.loads(content)
 
-        return Catalogue(name=catalogue_dict['name'], connection=self)
+        return Catalogue(name=catalogue_dict['name'],
+                         count=int(catalogue_dict['documentCount']),
+                         connection=self)
 
     def post_document(self, catalogue, document_body):
         resp, content = self.connection.post('%s/new' % catalogue.name, data={'message':simplejson.dumps(document_body)}, content_type='application/x-www-form-urlencoded')
@@ -57,7 +59,7 @@ class Connection(object):
                         body=document_dict['body'])
 
     def __getattr__(self, name):
-        return self.__create_catalogue(name)
+        return self.create_catalogue(name)
 
 class Network(object):
     def __init__(self, host, port, username, password):

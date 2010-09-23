@@ -53,3 +53,18 @@ def test_get_document_by_uri():
     assert retrieved_document.uri == document.uri
     assert retrieved_document.id == document.id
     assert retrieved_document.body == document.body
+
+def test_get_catalogue_count():
+    connection = Connection(username='test', password='test')
+    catalogue = connection.test_catalogue_5
+    document_body = {
+        'name': 'Bernardo',
+        'family_name': 'Heynemann',
+        'male': True
+    }
+    document = catalogue.post(document_body)
+    document = catalogue.post(document_body)
+
+    catalogue.refresh()
+
+    assert catalogue.count == 2
