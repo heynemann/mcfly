@@ -36,7 +36,7 @@ class Connection(object):
                          count=int(catalogue_dict['documentCount']),
                          connection=self)
 
-    def post_document(self, catalogue, document_body):
+    def store_document(self, catalogue, document_body):
         resp, content = self.connection.post('%s/new' % catalogue.name, data={'message':simplejson.dumps(document_body)}, content_type='application/x-www-form-urlencoded')
         self.__assert_response(resp, content)
 
@@ -53,10 +53,25 @@ class Connection(object):
         self.__assert_response(resp, content)
 
         document_dict = simplejson.loads(content)
+        return self.new_document_for(document_dict)
+
+    def new_document_for(self, document_dict):
         return Document(uri=document_dict['uri'],
                         id=document_dict['id'],
                         timestamp=document_dict['timestamp'],
                         body=document_dict['body'])
+
+    def get_documents(self, catalogue):
+        resp, content = self.connection.get('%s/documents' % catalogue.name)
+        self.__assert_response(resp, content)
+
+        documents = simplejson.loads(content)
+
+        loaded_documents = []
+        for document in documents:
+            loaded_documents.append(self.new_document_for(document))
+
+        return loaded_documents
 
     def __getattr__(self, name):
         return self.create_catalogue(name)

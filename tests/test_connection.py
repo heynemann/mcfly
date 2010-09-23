@@ -25,7 +25,7 @@ def test_create_catalogue_twice_returns_same_catalogue():
 
     assert catalogue.name == "test_catalogue_2"
 
-def test_post_document():
+def test_store_document():
     connection = Connection(username='test', password='test')
     catalogue = connection.test_catalogue_3
     document_body = {
@@ -33,7 +33,7 @@ def test_post_document():
         'family_name': 'Heynemann',
         'male': True
     }
-    document = catalogue.post(document_body)
+    document = catalogue.store(document_body)
 
     assert document.uri.startswith('/test_catalogue_3/'), document.uri
     assert len(document.id) == 8, len(document.id)
@@ -47,7 +47,7 @@ def test_get_document_by_uri():
         'family_name': 'Heynemann',
         'male': True
     }
-    document = catalogue.post(document_body)
+    document = catalogue.store(document_body)
 
     retrieved_document = catalogue.get(document.id)
     assert retrieved_document.uri == document.uri
@@ -62,9 +62,33 @@ def test_get_catalogue_count():
         'family_name': 'Heynemann',
         'male': True
     }
-    document = catalogue.post(document_body)
-    document = catalogue.post(document_body)
+    document = catalogue.store(document_body)
+    document = catalogue.store(document_body)
 
     catalogue.refresh()
 
     assert catalogue.count == 2
+
+def test_get_catalogue_documents():
+
+    connection = Connection(username='test', password='test')
+    catalogue = connection.test_catalogue_6
+    document_body = {
+        'name': 'Bernardo',
+        'family_name': 'Heynemann',
+        'male': True
+    }
+    document_a = catalogue.store(document_body)
+
+    document_body_b = {
+        'name': 'Aline',
+        'family_name': 'Lucena',
+        'male': False
+    }
+    document_b = catalogue.store(document_body_b)
+
+    documents = catalogue.get_documents()
+
+    assert documents[0].uri == document_a.uri
+    assert documents[1].uri == document_b.uri
+

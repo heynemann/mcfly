@@ -9,11 +9,14 @@ class Catalogue(object):
         self.count = count
         self.connection = connection
 
-    def post(self, document_body):
-        return self.connection.post_document(self, document_body)
+    def store(self, document_body):
+        return self.connection.store_document(self, document_body)
 
     def get(self, id):
         return self.connection.get_document(self, id)
+
+    def get_documents(self):
+        return self.connection.get_documents(self)
 
     def refresh(self):
         catalogue = self.connection.create_catalogue(self.name)
