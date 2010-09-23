@@ -77,4 +77,4 @@ Getting all catalogue documents
 
 You can also retrieve all documents from a catalogue (in the order they were inserted), using::
 
-    document = connection.my_catalogue.get_documents()
+    documents = connection.my_catalogue.get_documents()
