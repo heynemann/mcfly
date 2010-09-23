@@ -39,13 +39,17 @@ def test_post_document():
     assert len(document.id) == 8, len(document.id)
     assert sorted(document.body.keys()) == sorted(document_body.keys())
 
-# def test_get_document_by_uri():
-#     connection = Connection(username='test', password='test')
-#     catalogue = connection.test_catalogue_4
-#     document_body = {
-#         'name': 'Bernardo',
-#         'family_name': 'Heynemann',
-#         'male': True
-#     }
-#     document = catalogue.post(document_body)
-#
+def test_get_document_by_uri():
+    connection = Connection(username='test', password='test')
+    catalogue = connection.test_catalogue_4
+    document_body = {
+        'name': 'Bernardo',
+        'family_name': 'Heynemann',
+        'male': True
+    }
+    document = catalogue.post(document_body)
+
+    retrieved_document = catalogue.get(document.id)
+    assert retrieved_document.uri == document.uri
+    assert retrieved_document.id == document.id
+    assert retrieved_document.body == document.body

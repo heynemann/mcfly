@@ -11,6 +11,9 @@ class Catalogue(object):
     def post(self, document_body):
         return self.connection.post_document(self, document_body)
 
+    def get(self, id):
+        return self.connection.get_document(self, id)
+
 class Document(object):
     def __init__(self, uri, id, timestamp, body):
         self.uri = uri

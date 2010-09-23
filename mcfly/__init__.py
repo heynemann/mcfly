@@ -9,6 +9,9 @@ import simplejson
 
 from domain import Catalogue, Document
 
+class DocumentNotFoundError(RuntimeError):
+    pass
+
 class Connection(object):
     def __init__(self, username, password, host="http://localhost", port=4567):
         self.username = username
@@ -33,6 +36,18 @@ class Connection(object):
 
     def post_document(self, catalogue, document_body):
         resp, content = self.connection.post('%s/new' % catalogue.name, data={'message':simplejson.dumps(document_body)}, content_type='application/x-www-form-urlencoded')
+        self.__assert_response(resp, content)
+
+        document_dict = simplejson.loads(content)
+        return Document(uri=document_dict['uri'],
+                        id=document_dict['id'],
+                        timestamp=document_dict['timestamp'],
+                        body=document_dict['body'])
+
+    def get_document(self, catalogue, id):
+        resp, content = self.connection.get('%s/%s' % (catalogue.name, id))
+        if resp and "status" in resp and int(resp['status']) == 404:
+            raise DocumentNotFoundError('The document with id %s was not found int catalogue %s!' % (id, catalogue.name))
         self.__assert_response(resp, content)
 
         document_dict = simplejson.loads(content)
