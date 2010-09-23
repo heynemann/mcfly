@@ -37,6 +37,11 @@ Connecting to the database is really simple::
 
     connection = Connection(username='admin', password='12345')
 
+You can also specify the host and port::
+
+    connection = Connection(username='admin', password='12345', host='http://mydelorean.myapp.com', port=8888)
+
+
 Creating a Catalogue
 --------------------
 
