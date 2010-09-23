@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Mcfly is the library to query and update the `Delorean:http://github.com/heynemann/delorean`_ database in Python.
+Mcfly is the library to query and update the `Delorean <http://github.com/heynemann/delorean>`_ database in Python.
 
 Models
 ======
