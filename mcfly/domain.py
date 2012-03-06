@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from uuid import uuid4
-
 class Catalogue(object):
     def __init__(self, name, count, connection):
         self.name = name

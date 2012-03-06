@@ -5,7 +5,7 @@ from os.path import join
 
 import httplib2
 from urllib import urlencode
-import simplejson
+import ujson
 
 from domain import Catalogue, Document
 
@@ -30,17 +30,17 @@ class Connection(object):
         resp, content = self.connection.post('catalogues/create', data={'name': name}, content_type='application/x-www-form-urlencoded')
 
         self.__assert_response(resp, content)
-        catalogue_dict = simplejson.loads(content)
+        catalogue_dict = ujson.loads(content)
 
         return Catalogue(name=catalogue_dict['name'],
                          count=int(catalogue_dict['documentCount']),
                          connection=self)
 
     def store_document(self, catalogue, document_body):
-        resp, content = self.connection.post('%s/new' % catalogue.name, data={'message':simplejson.dumps(document_body)}, content_type='application/x-www-form-urlencoded')
+        resp, content = self.connection.post('%s/new' % catalogue.name, data={'message':ujson.dumps(document_body)}, content_type='application/x-www-form-urlencoded')
         self.__assert_response(resp, content)
 
-        document_dict = simplejson.loads(content)
+        document_dict = ujson.loads(content)
         return Document(uri=document_dict['uri'],
                         id=document_dict['id'],
                         timestamp=document_dict['timestamp'],
@@ -52,7 +52,7 @@ class Connection(object):
             raise DocumentNotFoundError('The document with id %s was not found int catalogue %s!' % (id, catalogue.name))
         self.__assert_response(resp, content)
 
-        document_dict = simplejson.loads(content)
+        document_dict = ujson.loads(content)
         return self.new_document_for(document_dict)
 
     def new_document_for(self, document_dict):
@@ -65,7 +65,7 @@ class Connection(object):
         resp, content = self.connection.get('%s/documents' % catalogue.name)
         self.__assert_response(resp, content)
 
-        documents = simplejson.loads(content)
+        documents = ujson.loads(content)
 
         loaded_documents = []
         for document in documents:
